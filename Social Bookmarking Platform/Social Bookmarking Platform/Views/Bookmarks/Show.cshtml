@@ -1,0 +1,132 @@
+﻿@model Social_Bookmarking_Platform.Models.Bookmark
+
+@if (TempData["message"] != null)
+{
+    <div class="alert @ViewBag.Alert p-3 rounded-3 text-center mb-5">
+        @ViewBag.Message
+    </div>
+}
+<br />
+
+<div class="card">
+
+    <partial name="BookmarkInfo" model="Model"></partial>
+        <!--Lipseste ceva aici-->
+        <div class="d-flex flex-row justify-content-between">
+
+            <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Edit" asp-route-id="@Model.Id">Editeaza articol</a>
+
+            <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-id="@Model.Id">
+
+                <button class="btn btn-danger" type="submit">Sterge articol</button>
+
+            </form>
+
+        </div>
+    
+        <!--
+    <form method="post" asp-controller="Bookmarks" asp-action="AddBookmark">
+        <input type="hidden" name="ArticleId" value="@Model.Id" />
+        <div class="d-flex flex-row justify-content-center p-3 border-1 border-top">
+            <div>
+                <select name="BookmarkId" class="form-control">
+                    <option selected>Adauga acest articol intr-o colectie</option>
+                    LIPSESTE CEVA
+                </select>
+            </div>
+            <div>
+                <input type="submit" class="btn btn-success alert-success" value="+" />
+            </div>
+        </div>
+    </form>
+    -->
+
+</div>
+
+<br />
+<br />
+
+@foreach (var comm in Model.Comments)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8">
+
+                <div>
+
+                    <p>@comm.Content</p>
+                    <small>@comm.Date</small>
+                    <strong><i class="bi bi-person"> @comm.User.UserName</i></strong>
+
+                </div>
+                <br>
+
+                @if (comm.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin == true)
+                {
+                    <div class="d-flex">
+                        <div>
+                            <a class="btn btn-outline-primary" asp-controller="Comments" asp-action="Edit" asp-route-id="@comm.Id">
+                                <i class="bi bi-pencil-square"></i> Editeaza
+                            </a>
+
+                        </div>
+                        <div>
+                            <form method="post" asp-controller="Comments" asp-action="Delete" asp-route-id="@comm.Id">
+
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                <br />
+            </div>
+
+            <div class="col-md-2"></div>
+
+        </div>
+
+    </div>
+}
+
+
+@* Afisarea formularului in care se poate adauga un comentariu *@
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+
+            <div class="card">
+
+                <form method="post" asp-controller="Bookmarks" asp-action="Show">
+
+                    <div class="card-body">
+
+                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
+
+                        <label>Continut comentariu</label>
+                        <br />
+                        <br /><br />
+
+                        <button class="btn btn-success" type="submit">Adauga comentariul</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-2"></div>
+
+    </div>
+
+</div>
