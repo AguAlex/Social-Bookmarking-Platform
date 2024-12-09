@@ -19,6 +19,8 @@ namespace Social_Bookmarking_Platform.Data
          
         public DbSet<Comment> Comments { get; set; }
         public DbSet<BookmarkBoard> BookmarkBoards { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Comment> Comment { get; set; }
         protected override void OnModelCreating(ModelBuilder
         modelBuilder)
         {
