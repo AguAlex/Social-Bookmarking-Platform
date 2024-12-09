@@ -1,5 +1,10 @@
 ﻿<br />
+<<<<<<< Updated upstream
 <h2 class="text-center">Afisare bookmarks</h2>
+=======
+<h2 class="text-center">Afisare Bookmarks</h2>
+
+>>>>>>> Stashed changes
 <br />
 
 @if (ViewBag.Message != null)
@@ -8,7 +13,10 @@
         @ViewBag.Message
     </div>
 }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 <br />
 <!--
 @* Motorul de cautare *@
@@ -21,6 +29,7 @@
 </form>
 -->
 
+<<<<<<< Updated upstream
 @foreach (var bookmark in ViewBag.Bookmarks)
 {
     <div class="card">
@@ -28,6 +37,15 @@
         <partial name="BookmarkInfo" model="bookmark"></partial>
        
         <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Show" asp-route-id="@bookmark.Id">Afisare bookmark</a>
+=======
+@foreach (var bookmark in ViewBag.Articles)
+{
+    <div class="card">
+
+        <partial name="ArticleInfo" model="article"></partial>
+
+        <a class="btn btn-success" asp-controller="Articles" asp-action="Show" asp-route-id="@article.Id">Afisare articol</a>
+>>>>>>> Stashed changes
 
     </div>
 
@@ -35,9 +53,12 @@
     <br />
 }
 
+<<<<<<< Updated upstream
 <!--
 @* Afisarea paginata a articolelor *@
 
+=======
+>>>>>>> Stashed changes
 <div>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -59,5 +80,9 @@
             </li>
         </ul>
     </nav>
+<<<<<<< Updated upstream
 </div>
 -->
+=======
+</div>
+>>>>>>> Stashed changes
