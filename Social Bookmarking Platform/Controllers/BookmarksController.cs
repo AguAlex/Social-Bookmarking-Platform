@@ -1,10 +1,8 @@
 ﻿using Ganss.Xss;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< Updated upstream
 using Microsoft.AspNetCore.Mvc.Rendering;
-=======
->>>>>>> Stashed changes
+
 using Microsoft.EntityFrameworkCore;
 using Social_Bookmarking_Platform.Data;
 using Social_Bookmarking_Platform.Models;
@@ -32,21 +30,15 @@ namespace Social_Bookmarking_Platform.Controllers
                                       .Include("User")
                                       .OrderByDescending(a => a.Date);
 
-<<<<<<< Updated upstream
+
             ViewBag.Bookmarks = bookmarks;
 
-=======
->>>>>>> Stashed changes
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.Message = TempData["message"];
                 ViewBag.Alert = TempData["messageType"];
             }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             return View();
         }
 
