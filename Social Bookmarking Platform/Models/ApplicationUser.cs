@@ -10,7 +10,7 @@ namespace Social_Bookmarking_Platform.Models
 
         public virtual ICollection<Bookmark>? Bookmarks { get; set; }
 
-        //public virtual ICollection<Boards>? Boards { get; set; }
+        public virtual ICollection<Board>? Boards { get; set; }
 
         public string? FirstName { get; set; }
 

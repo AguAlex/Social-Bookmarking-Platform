@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Social_Bookmarking_Platform.Data;
 
@@ -11,9 +12,11 @@ using Social_Bookmarking_Platform.Data;
 namespace Social_Bookmarking_Platform.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210131147_boards")]
+    partial class boards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,7 +412,7 @@ namespace Social_Bookmarking_Platform.Data.Migrations
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.Board", b =>
                 {
                     b.HasOne("Social_Bookmarking_Platform.Models.ApplicationUser", "User")
-                        .WithMany("Boards")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -470,8 +473,6 @@ namespace Social_Bookmarking_Platform.Data.Migrations
 
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Boards");
-
                     b.Navigation("Bookmarks");
 
                     b.Navigation("Comments");
