@@ -12,6 +12,7 @@ namespace Social_Bookmarking_Platform.Data
         {
         }
 
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Bookmark> Bookmarks { get; set; }
         public DbSet<Board> Boards { get; set; }
         public DbSet<BookmarkBoard> BookmarkBoards { get; set; }
