@@ -16,6 +16,20 @@
                     <h4>@Html.Raw(bookmark.Title)</h4>
                 </div>
 
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between flex-row mt-5">
+
+                        <div><i class="bi bi-globe"></i> @bookmark.Category.Title</div>
+
+                        <div><i class="bi bi-person"></i> @bookmark.User.UserName</div>
+
+                        <span class="alert-success">@bookmark.Date</span>
+
+                    </div>
+
+                </div>
                 <div class="card-footer">
                     <a class="btn btn-outline-success" href="/Bookmarks/Show/@bookmark.Id">Vezi Articolul</a>
                 </div>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Social_Bookmarking_Platform.Data;
+using Social_Bookmarking_Platform.Data.Migrations;
 using Social_Bookmarking_Platform.Models;
 
 namespace Social_Bookmarking_Platform.Controllers
@@ -24,11 +25,15 @@ namespace Social_Bookmarking_Platform.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
-            var bookmarks = db.Bookmarks.Include("Category")
-                                      .Include("User")
-                                      .OrderByDescending(a => a.Date);
+            var userId = _userManager.GetUserId(User);
+            var bookmarks = db.Bookmarks
+                 .Include("Category")
+                 .Include("User")
+                 .Where(a => a.UserId == userId)
+                 .OrderByDescending(a => a.Date);
 
             ViewBag.Bookmarks = bookmarks;
 
@@ -41,6 +46,7 @@ namespace Social_Bookmarking_Platform.Controllers
             return View();
         }
 
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Show(int id)
         {
             Bookmark bookmark = db.Bookmarks.Include("Category")
@@ -67,6 +73,7 @@ namespace Social_Bookmarking_Platform.Controllers
             return View(bookmark);
         }
 
+        [Authorize(Roles = "User,Admin")]
         public IActionResult New()
         {
             Bookmark bookmark = new Bookmark();
@@ -110,6 +117,7 @@ namespace Social_Bookmarking_Platform.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult New(Bookmark bookmark)
         {
             var sanitizer = new HtmlSanitizer();
@@ -168,7 +176,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
             return Redirect("/Bookmarks/Show/" + bookmarkBoard.BookmarkId);
         }
-
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
 

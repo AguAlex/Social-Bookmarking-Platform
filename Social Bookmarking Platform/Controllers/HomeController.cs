@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Social_Bookmarking_Platform.Data;
+using Social_Bookmarking_Platform.Data.Migrations;
 using Social_Bookmarking_Platform.Models;
 using System.Diagnostics;
 
@@ -34,8 +36,9 @@ namespace Social_Bookmarking_Platform.Controllers
         public IActionResult Index()
         {
 
-            var bookmarks = from bookmark in db.Bookmarks
-                            select bookmark;
+            var bookmarks = db.Bookmarks
+                 .Include("Category")
+                 .Include("User");
 
             ViewBag.FirstArticle = bookmarks.First();
             ViewBag.Bookmarks = bookmarks;
@@ -45,7 +48,9 @@ namespace Social_Bookmarking_Platform.Controllers
 
         public IActionResult OrderByDate()
         {
-            var bookmarks = db.Bookmarks.OrderBy(o => o.Title);
+            var bookmarks = db.Bookmarks.Include("Category")
+                                        .Include("User")
+                                        .OrderBy(o => o.Title);
             ViewBag.Bookmarks = bookmarks;
 
             return View("Index");
