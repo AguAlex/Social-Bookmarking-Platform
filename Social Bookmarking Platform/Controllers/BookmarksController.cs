@@ -49,12 +49,12 @@ namespace Social_Bookmarking_Platform.Controllers
                                          .Include("Comments.User")
                               .Where(art => art.Id == id)
                               .First();
-            /*
-            // Adaugam bookmark-urile utilizatorului pentru dropdown
-            ViewBag.UserBookmarks = db.Bookmarks
+            
+            // Adaugam board-urile utilizatorului pentru dropdown
+            ViewBag.UserBoards = db.Boards
                                       .Where(b => b.UserId == _userManager.GetUserId(User))
                                       .ToList();
-            */
+          
             SetAccessRights();
             
 
@@ -98,13 +98,11 @@ namespace Social_Bookmarking_Platform.Controllers
                                          .Include("Comments.User")
                                          .Where(bk => bk.Id == comment.BookmarkId)
                                          .First();
-
-                //return Redirect("/Articles/Show/" + comm.ArticleId);
-                /*
-                ViewBag.UserBookmarks = db.Bookmarks
+                
+                ViewBag.UserBoards = db.Boards
                                           .Where(b => b.UserId == _userManager.GetUserId(User))
                                           .ToList();
-                */
+                
                 SetAccessRights();
 
                 return View(bk);
@@ -135,6 +133,40 @@ namespace Social_Bookmarking_Platform.Controllers
                 bookmark.Categ = GetAllCategories();
                 return View(bookmark);
             }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult AddBoard([FromForm] BookmarkBoard bookmarkBoard)
+        {
+            if (ModelState.IsValid)
+            {
+                // Verificam daca avem deja bookmark-ul in colectie
+                if (db.BookmarkBoards
+                    .Where(ab => ab.BookmarkId == bookmarkBoard.BookmarkId)
+                    .Where(ab => ab.BoardId == bookmarkBoard.BoardId)
+                    .Count() > 0)
+                {
+                    TempData["message"] = "Acest bookmark este deja adaugat in colectie";
+                    TempData["messageType"] = "alert-danger";
+                }
+                else
+                {
+                    db.BookmarkBoards.Add(bookmarkBoard);
+
+                    db.SaveChanges();
+
+                    TempData["message"] = "Bookmark-ul a fost adaugat in colectia selectata";
+                    TempData["messageType"] = "alert-success";
+                }
+            }
+            else
+            {
+                TempData["message"] = "Nu s-a putut adauga bookmark-ul in colectie";
+                TempData["messageType"] = "alert-danger";
+            }
+
+            return Redirect("/Bookmarks/Show/" + bookmarkBoard.BookmarkId);
         }
 
         public IActionResult Edit(int id)

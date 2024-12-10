@@ -286,6 +286,12 @@ namespace Social_Bookmarking_Platform.Data.Migrations
 
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.BookmarkBoard", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int?>("BookmarkId")
                         .HasColumnType("int");
 
@@ -295,15 +301,11 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                     b.Property<DateTime>("BoardDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("BookmarkId", "BoardId");
+                    b.HasKey("Id", "BookmarkId", "BoardId");
 
                     b.HasIndex("BoardId");
+
+                    b.HasIndex("BookmarkId");
 
                     b.ToTable("BookmarkBoards");
                 });
