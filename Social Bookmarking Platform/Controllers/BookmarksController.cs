@@ -1,4 +1,4 @@
-﻿using Ganss.Xss;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -125,7 +125,7 @@ namespace Social_Bookmarking_Platform.Controllers
             return View();
         }
 
-        [HttpPost]
+       [HttpPost]
         public IActionResult IncrementLike(int bookmarkId)
         {
             var bookmark = db.Bookmarks.Where(bk => bk.Id == bookmarkId).FirstOrDefault();
@@ -243,7 +243,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                //bookmark.Content = sanitizer.Sanitize(bookmark.Content);
+                bookmark.Content = sanitizer.Sanitize(bookmark.Content);
 
                 db.Bookmarks.Add(bookmark);
                 db.SaveChanges();
@@ -407,3 +407,4 @@ namespace Social_Bookmarking_Platform.Controllers
         }
     }
 }
+            
