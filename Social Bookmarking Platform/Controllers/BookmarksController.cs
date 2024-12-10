@@ -106,7 +106,7 @@ namespace Social_Bookmarking_Platform.Controllers
         {
             var selectList = new List<SelectListItem>();
 
-            var categories = from cat in db.Category
+            var categories = from cat in db.Categories
                              select cat;
 
             foreach (var category in categories)

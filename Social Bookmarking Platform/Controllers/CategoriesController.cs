@@ -29,7 +29,7 @@ namespace Social_Bookmarking_Platform.Controllers
                 ViewBag.message = TempData["message"].ToString();
             }
 
-            var categories = from category in db.Category
+            var categories = from category in db.Categories
                              orderby category.Title
                              select category;
             ViewBag.Categories = categories;
@@ -37,7 +37,7 @@ namespace Social_Bookmarking_Platform.Controllers
         }
         public ActionResult Show(int id)
         {
-            Category category = db.Category.Find(id);
+            Category category = db.Categories.Find(id);
             return View(category);
         }
         public ActionResult New()
@@ -50,7 +50,7 @@ namespace Social_Bookmarking_Platform.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Category.Add(cat);
+                db.Categories.Add(cat);
                 db.SaveChanges();
                 TempData["message"] = "Categoria a fost adaugata";
                 return RedirectToAction("Index");
@@ -63,14 +63,14 @@ namespace Social_Bookmarking_Platform.Controllers
         }
         public ActionResult Edit(int id)
         {
-            Category category = db.Category.Find(id);
+            Category category = db.Categories.Find(id);
             return View(category);
         }
 
         [HttpPost]
         public ActionResult Edit(int id, Category requestCategory)
         {
-            Category category = db.Category.Find(id);
+            Category category = db.Categories.Find(id);
 
             if (ModelState.IsValid)
             {
@@ -89,9 +89,9 @@ namespace Social_Bookmarking_Platform.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Category category = db.Category.Find(id);
+            Category category = db.Categories.Find(id);
 
-            db.Category.Remove(category);
+            db.Categories.Remove(category);
 
             TempData["message"] = "Categoria a fost stearsa";
             db.SaveChanges();
