@@ -1,4 +1,4 @@
-﻿<br />
+<br />
 <h2 class="text-center">Afisare bookmarks</h2>
 <br />
 
@@ -10,7 +10,7 @@
 }
 
 <br />
-<!--
+
 @* Motorul de cautare *@
 <form method="GET">
     <div class="input-group mb-3">
@@ -19,8 +19,13 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
     </div>
 </form>
+
 -->
 @if (ViewBag.Bookmarks != null && ((IEnumerable<object>)ViewBag.Bookmarks).Any())
+
+
+@foreach (var bookmark in ViewBag.Bookmarks)
+
 {
     @foreach(var bookmark in ViewBag.Bookmarks)
     {
@@ -39,9 +44,8 @@ else
     <p>No bookmarks available.</p>
 }
 
-<!--
-@* Afisarea paginata a articolelor *@
 
+@* Afisarea paginata a articolelor *@
 <div>
     <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -64,4 +68,4 @@ else
         </ul>
     </nav>
 </div>
--->
+
