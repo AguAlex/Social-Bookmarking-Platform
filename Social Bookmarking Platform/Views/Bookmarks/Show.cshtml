@@ -15,7 +15,11 @@
         <div class="d-flex flex-row justify-content-between">
 
             <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Edit" asp-route-id="@Model.Id">Editeaza articol</a>
-
+        <form method="post" asp-controller="Bookmarks" asp-action="IncrementLike" asp-route-bookmarkId="@Model.Id">
+            <button type="submit" class="btn btn-primary">
+                Like <span class="badge bg-secondary">@Model.Likes</span>
+            </button>
+        </form>
             <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-id="@Model.Id">
 
                 <button class="btn btn-danger" type="submit">Sterge articol</button>

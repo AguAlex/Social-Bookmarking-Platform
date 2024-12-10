@@ -46,6 +46,42 @@ namespace Social_Bookmarking_Platform.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult IncrementLike(int bookmarkId)
+        {
+            var bookmark = db.Bookmarks.Where(bk => bk.Id == bookmarkId).FirstOrDefault();
+
+            if (bookmark == null)
+            {
+                TempData["message"] = "Bookmark not found.";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
+
+            // Verifică dacă like-ul este mai mare de 0
+            if (bookmark.Likes == null)
+            {
+                bookmark.Likes = 0;  // Setează la 0 dacă este null
+            }
+
+            // Alternarea între incrementare și decrementare
+            if (bookmark.Likes > 0)
+            {
+                bookmark.Likes--;  // Scade un like
+            }
+            else
+            {
+                bookmark.Likes++;  // Dacă likes sunt 0, le crește
+            }
+
+            db.SaveChanges(); // Salvează schimbările
+
+            // După modificare, redirecționează înapoi la pagina Show
+            return RedirectToAction("Show", new { id = bookmarkId });
+        }
+
+
+
         [Authorize(Roles = "User,Admin")]
         public IActionResult Show(int id)
         {

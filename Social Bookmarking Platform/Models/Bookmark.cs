@@ -12,6 +12,7 @@ namespace Social_Bookmarking_Platform.Models
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100, ErrorMessage = "Titlul nu poate avea mai mult de 100 de caractere")]
         public string Title { get; set; }
+        public int Likes { get; set; } = 0;
         public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Categoria este obligatorie")]
