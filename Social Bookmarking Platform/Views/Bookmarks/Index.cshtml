@@ -20,19 +20,23 @@
     </div>
 </form>
 -->
-
-@foreach (var bookmark in ViewBag.Bookmarks)
+@if (ViewBag.Bookmarks != null && ((IEnumerable<object>)ViewBag.Bookmarks).Any())
 {
-    <div class="card">
+    @foreach(var bookmark in ViewBag.Bookmarks)
+    {
+        <div class="card">
+            <partial name="BookmarkInfo" model="bookmark"></partial>
+            <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Show" asp-route-id="@bookmark.Id">Afisare bookmark</a>
+        </div>
+        <br />
+        <br />
+    }
+}
 
-        <partial name="BookmarkInfo" model="bookmark"></partial>
-       
-        <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Show" asp-route-id="@bookmark.Id">Afisare bookmark</a>
+else
 
-    </div>
-
-    <br />
-    <br />
+{
+    <p>No bookmarks available.</p>
 }
 
 <!--
