@@ -1,8 +1,25 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿
+<div class="d-flex justify-content-center my-3">
+    <a asp-action="OrderByDate" class="btn btn-primary mx-2">Sort by Date</a>
+    <a asp-action="OrderByDate" class="btn btn-primary mx-2">Sort by Likes</a>
+</div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<br />
+<br />
+
+<div class="row mb-4">
+    @foreach (var bookmark in ViewBag.Bookmarks)
+    {
+        <div class="col-6 row-style">
+            <div class="card">
+                <div class="card-title p-3 text-center bg-dark text-white">
+                    <h4>@Html.Raw(bookmark.Title)</h4>
+                </div>
+
+                <div class="card-footer">
+                    <a class="btn btn-outline-success" href="/Bookmarks/Show/@bookmark.Id">Vezi Articolul</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

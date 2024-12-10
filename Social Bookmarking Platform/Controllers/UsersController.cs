@@ -127,16 +127,16 @@ namespace Social_Bookmarking_Platform.Controllers
                     db.Bookmarks.Remove(bookmark);
                 }
             }
-            /*
+            
             // Delete user boards
             if (user.Boards.Count > 0)
             {
-                foreach (var article in user.Articles)
+                foreach (var board in user.Boards)
                 {
-                    db.Articles.Remove(article);
+                    db.Boards.Remove(board);
                 }
             }
-            */
+            
 
             db.ApplicationUsers.Remove(user);
 
