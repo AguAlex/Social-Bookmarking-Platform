@@ -40,7 +40,7 @@ namespace Social_Bookmarking_Platform.Controllers
                  .Include("Category")
                  .Include("User");
 
-            ViewBag.FirstArticle = bookmarks.First();
+            //ViewBag.FirstArticle = bookmarks.First();
             ViewBag.Bookmarks = bookmarks;
 
             // MOTOR DE CAUTARE

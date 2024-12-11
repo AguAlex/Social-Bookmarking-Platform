@@ -1,4 +1,5 @@
-﻿using Ganss.Xss;
+﻿using System.Net.NetworkInformation;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,18 +14,63 @@ namespace Social_Bookmarking_Platform.Controllers
     public class BookmarksController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IWebHostEnvironment _env;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         public BookmarksController(
         ApplicationDbContext context,
+        IWebHostEnvironment env,
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager
         )
         {
             db = context;
+            _env = env;
             _userManager = userManager;
             _roleManager = roleManager;
         }
+
+        // POST: Procesează datele trimise de utilizator
+        [HttpPost]
+        public async Task<IActionResult> New(Bookmark bookmark, IFormFile Image)
+        {
+            bookmark.Date = DateTime.Now;
+            bookmark.UserId = _userManager.GetUserId(User);
+            if (Image != null && Image.Length > 0)
+            {
+                // Verificăm extensia
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".mp4", ".mov" };
+                var fileExtension = Path.GetExtension(Image.FileName).ToLower();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("BookmarkImage", "Fișierul trebuie să fie o imagine(jpg, jpeg, png, gif) sau un video(mp4, mov).");
+                return View(bookmark);
+                }
+                // Cale stocare
+                var storagePath = Path.Combine(_env.WebRootPath, "images",
+                Image.FileName);
+                var databaseFileName = "/images/" + Image.FileName;
+                // Salvare fișier
+                using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                {
+                    await Image.CopyToAsync(fileStream);
+                }
+                ModelState.Remove(nameof(bookmark.Image));
+                bookmark.Image = databaseFileName;
+            }
+            if (TryValidateModel(bookmark))
+            {
+                // Adăugare articol
+                db.Bookmarks.Add(bookmark);
+                await db.SaveChangesAsync();
+                // Redirecționare după succes
+                return RedirectToAction("Index", "Bookmarks");
+            }
+            bookmark.Categ = GetAllCategories();
+            return View(bookmark);
+        }
+
+
         [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
@@ -231,32 +277,32 @@ namespace Social_Bookmarking_Platform.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Roles = "User,Admin")]
-        public IActionResult New(Bookmark bookmark)
-        {
-            var sanitizer = new HtmlSanitizer();
+        //[HttpPost]
+        //[Authorize(Roles = "User,Admin")]
+        //public IActionResult New(Bookmark bookmark)
+        //{
+        //    var sanitizer = new HtmlSanitizer();
 
-            bookmark.Date = DateTime.Now;
+        //    bookmark.Date = DateTime.Now;
 
-            bookmark.UserId = _userManager.GetUserId(User);
+        //    bookmark.UserId = _userManager.GetUserId(User);
 
-            if (ModelState.IsValid)
-            {
-                bookmark.Content = sanitizer.Sanitize(bookmark.Content);
+        //    if (ModelState.IsValid)
+        //    {
+        //        bookmark.Content = sanitizer.Sanitize(bookmark.Content);
 
-                db.Bookmarks.Add(bookmark);
-                db.SaveChanges();
-                TempData["message"] = "Bookmark-ul a fost adaugat";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                bookmark.Categ = GetAllCategories();
-                return View(bookmark);
-            }
-        }
+        //        db.Bookmarks.Add(bookmark);
+        //        db.SaveChanges();
+        //        TempData["message"] = "Bookmark-ul a fost adaugat";
+        //        TempData["messageType"] = "alert-success";
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        bookmark.Categ = GetAllCategories();
+        //        return View(bookmark);
+        //    }
+        //}
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]

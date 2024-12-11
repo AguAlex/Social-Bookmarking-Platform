@@ -11,13 +11,17 @@ namespace Social_Bookmarking_Platform.Models
 
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100, ErrorMessage = "Titlul nu poate avea mai mult de 100 de caractere")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public int Likes { get; set; } = 0;
         public DateTime Date { get; set; }
 
-        public string Content { get; set; } 
+        public string? Content { get; set; }
 
-        [Required(ErrorMessage = "Categoria este obligatorie")]
+
+        // Adaugam un string unde vom salva calea imaginii pentru articol
+        public string? Image{ get; set;  }
+
+            [Required(ErrorMessage = "Categoria este obligatorie")]
         public int? CategoryId { get; set; }
 
         public string? UserId { get; set; }
