@@ -26,7 +26,12 @@
 
 
                 <div class="card-body">
-
+                    <div class="text-center">
+                        <img src="@bookmark.Image" alt="Bookmark Image"
+                             class="img-fluid rounded mb-3 shadow"
+                             style="width: 100%; max-width: 300px; height: auto; object-fit: cover; border-radius: 15px;">
+                        <p class="text-muted">@bookmark.Content</p>
+                    </div>  
                     <div class="d-flex justify-content-between flex-row mt-5">
 
                             <div><i class="bi bi-globe"></i> @bookmark.Category.Title</div>
