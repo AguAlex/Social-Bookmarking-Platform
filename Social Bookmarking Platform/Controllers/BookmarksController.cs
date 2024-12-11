@@ -243,7 +243,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                //bookmark.Content = sanitizer.Sanitize(bookmark.Content);
+                bookmark.Content = sanitizer.Sanitize(bookmark.Content);
 
                 db.Bookmarks.Add(bookmark);
                 db.SaveChanges();
@@ -329,6 +329,7 @@ namespace Social_Bookmarking_Platform.Controllers
                 {
                     Bookmark.Title = requestBookmark.Title;
                     Bookmark.Date = DateTime.Now;
+                    
                     Bookmark.CategoryId = requestBookmark.CategoryId;
                     TempData["message"] = "Bookmark-ul a fost modificat";
                     TempData["messageType"] = "alert-success";
