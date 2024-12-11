@@ -178,15 +178,12 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-<<<<<<< Updated upstream
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-=======
->>>>>>> Stashed changes
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -267,13 +264,6 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-<<<<<<< Updated upstream
-=======
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
->>>>>>> Stashed changes
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -299,15 +289,12 @@ namespace Social_Bookmarking_Platform.Data.Migrations
 
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.BookmarkBoard", b =>
                 {
-<<<<<<< Updated upstream
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-=======
->>>>>>> Stashed changes
                     b.Property<int?>("BookmarkId")
                         .HasColumnType("int");
 
@@ -317,25 +304,12 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                     b.Property<DateTime>("BoardDate")
                         .HasColumnType("datetime2");
 
-<<<<<<< Updated upstream
                     b.HasKey("Id", "BookmarkId", "BoardId");
 
                     b.HasIndex("BoardId");
 
                     b.HasIndex("BookmarkId");
 
-=======
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasKey("BookmarkId", "BoardId");
-
-                    b.HasIndex("BoardId");
-
->>>>>>> Stashed changes
                     b.ToTable("BookmarkBoards");
                 });
 
@@ -440,11 +414,7 @@ namespace Social_Bookmarking_Platform.Data.Migrations
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.Board", b =>
                 {
                     b.HasOne("Social_Bookmarking_Platform.Models.ApplicationUser", "User")
-<<<<<<< Updated upstream
                         .WithMany("Boards")
-=======
-                        .WithMany()
->>>>>>> Stashed changes
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -459,11 +429,7 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Social_Bookmarking_Platform.Models.ApplicationUser", "User")
-<<<<<<< Updated upstream
                         .WithMany("Bookmarks")
-=======
-                        .WithMany()
->>>>>>> Stashed changes
                         .HasForeignKey("UserId");
 
                     b.Navigation("Category");
@@ -499,11 +465,7 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Social_Bookmarking_Platform.Models.ApplicationUser", "User")
-<<<<<<< Updated upstream
                         .WithMany("Comments")
-=======
-                        .WithMany()
->>>>>>> Stashed changes
                         .HasForeignKey("UserId");
 
                     b.Navigation("Bookmark");
@@ -511,7 +473,6 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< Updated upstream
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Boards");
@@ -521,8 +482,6 @@ namespace Social_Bookmarking_Platform.Data.Migrations
                     b.Navigation("Comments");
                 });
 
-=======
->>>>>>> Stashed changes
             modelBuilder.Entity("Social_Bookmarking_Platform.Models.Board", b =>
                 {
                     b.Navigation("BookmarkBoards");

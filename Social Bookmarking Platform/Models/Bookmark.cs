@@ -14,11 +14,6 @@ namespace Social_Bookmarking_Platform.Models
         public string Title { get; set; }
         public int Likes { get; set; } = 0;
         public DateTime Date { get; set; }
-        public int Likes { get; set; } = 0;
-
-        [Required(ErrorMessage = "Continutul bookmarkului este obligatoriu")]
-        public string Content { get; set; }
-
 
         [Required(ErrorMessage = "Categoria este obligatorie")]
         public int? CategoryId { get; set; }

@@ -36,11 +36,7 @@ namespace Social_Bookmarking_Platform.Controllers
             // Fiecare utilizator vede bookmark-urile pe care le-a creat
             // Userii cu rolul de Admin pot sa vizualizeze toate bookmark-urile existente
             // HttpGet - implicit
-<<<<<<< Updated upstream
             [Authorize(Roles = "User,Admin")]
-=======
-        [Authorize(Roles = "User,Admin")]
->>>>>>> Stashed changes
         public IActionResult Index()
         {
             if (TempData.ContainsKey("message"))
