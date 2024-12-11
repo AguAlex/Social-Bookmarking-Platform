@@ -1,0 +1,4 @@
+- de reparat sistemul de like uri
+- de facut continut cu summernote
+- de modificat controllere si views continutul
+- emoji de like la like uri
