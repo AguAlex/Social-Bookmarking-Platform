@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using System.Security.Claims;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -170,41 +171,41 @@ namespace Social_Bookmarking_Platform.Controllers
 
             return View();
         }
-
+        // Adăugarea unui like pentru un bookmark
         [HttpPost]
-        public IActionResult IncrementLike(int bookmarkId)
+        public async Task<IActionResult> Like(int bookmarkId)
         {
-            var bookmark = db.Bookmarks.Where(bk => bk.Id == bookmarkId).FirstOrDefault();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obținem ID-ul utilizatorului autentificat
+            var user = await db.Users.FindAsync(userId);
+            var bookmark = await db.Bookmarks.FindAsync(bookmarkId);
 
-            if (bookmark == null)
+            if (user != null && bookmark != null)
             {
-                TempData["message"] = "Bookmark not found.";
-                TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index");
+                // Verificăm dacă utilizatorul a dat deja like acestui bookmark
+                var existingLike = await db.Likes
+                    .FirstOrDefaultAsync(l => l.UserId == user.Id && l.BookmarkId == bookmark.Id);
+
+                if (existingLike == null)  // Dacă nu a dat deja like
+                {
+                    var like = new Like
+                    {
+                        UserId = user.Id,
+                        BookmarkId = bookmark.Id,
+                        DateLiked = DateTime.Now
+                    };
+
+                    db.Likes.Add(like);
+                    await db.SaveChangesAsync();
+                }
+                else // Dacă a dat deja like
+                {
+                    db.Likes.Remove(existingLike); // Eliminăm like-ul existent
+                    await db.SaveChangesAsync(); // Salvăm modificările
+                }
             }
 
-            // Verifică dacă like-ul este mai mare de 0
-            if (bookmark.Likes == null)
-            {
-                bookmark.Likes = 0;  // Setează la 0 dacă este null
-            }
-
-            // Alternarea între incrementare și decrementare
-            if (bookmark.Likes > 0)
-            {
-                bookmark.Likes--;  // Scade un like
-            }
-            else
-            {
-                bookmark.Likes++;  // Dacă likes sunt 0, le crește
-            }
-
-            db.SaveChanges(); // Salvează schimbările
-
-            // După modificare, redirecționează înapoi la pagina Show
-            return RedirectToAction("Show", new { id = bookmarkId });
+            return RedirectToAction("Show", new { id = bookmarkId }); // Redirect către pagina bookmark-ului
         }
-
 
 
         [Authorize(Roles = "User,Admin")]
@@ -217,11 +218,18 @@ namespace Social_Bookmarking_Platform.Controllers
                           .Include("Comments.User")
                           .FirstOrDefault(art => art.Id == id);
 
+            var numberOfLikes = db.Likes
+                         .Where(l => l.BookmarkId == id)
+                         .Count();
+
+
             // Adaugam board-urile utilizatorului pentru dropdown
             ViewBag.UserBoards = db.Boards
                                       .Where(b => b.UserId == _userManager.GetUserId(User))
                                       .ToList();
-          
+
+            ViewBag.LikesCount = numberOfLikes;
+
             SetAccessRights();
             
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Social_Bookmarking_Platform.Data.Migrations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,7 +13,7 @@ namespace Social_Bookmarking_Platform.Models
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100, ErrorMessage = "Titlul nu poate avea mai mult de 100 de caractere")]
         public string? Title { get; set; }
-        public int Likes { get; set; } = 0;
+        public ICollection<Like>? Likes { get; set; }
         public DateTime Date { get; set; }
 
         public string? Content { get; set; }
