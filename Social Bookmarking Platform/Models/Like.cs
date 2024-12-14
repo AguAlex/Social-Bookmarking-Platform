@@ -9,8 +9,6 @@ namespace Social_Bookmarking_Platform.Models
         public string? UserId { get; set; }
         public int? BookmarkId { get; set; }
         public DateTime? DateLiked { get; set; }
-
-        // Navigație la User și Bookmark
         public ApplicationUser? User { get; set; }
         public Bookmark? Bookmark { get; set; }
     }

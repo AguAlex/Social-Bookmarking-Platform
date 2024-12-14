@@ -131,9 +131,13 @@ namespace Social_Bookmarking_Platform.Controllers
         }
         public IActionResult OrderByLikes()
         {
-            var bookmarks = db.Bookmarks.Include("Category")
-                                        .Include("User")
-                                        .OrderByDescending(o => o.Likes);
+            var bookmarks = db.Bookmarks
+                              .Include(b => b.Category)
+                              .Include(b => b.User)
+                              .Include(b => b.Likes)
+                              .OrderByDescending(b => b.Likes.Count())
+                              .ToList();
+
             ViewBag.Bookmarks = bookmarks;
 
             return View("Index");

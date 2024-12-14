@@ -32,16 +32,16 @@
     <input asp-for="LastName" class="form-control" />
     <br />
 
-    <i class="bi bi-card-list"></i>
-    <label>Selectati rolul</label>
-    <br />
-
     <div class="form-group">
         <label asp-for="ProfileImage">Incarca imaginea de profil</label>
         <input asp-for="ProfileImage" class="form-control" type="file" />
         <span asp-validation-for="ProfileImage" class="text-danger"></span>
     </div>
 
+
+    <i class="bi bi-card-list"></i>
+    <label>Selectati rolul</label>
+    <br />
 
     <select name="newRole" class="form-control">
         <option selected>Selectati rolul</option>

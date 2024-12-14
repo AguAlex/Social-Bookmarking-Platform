@@ -175,17 +175,17 @@ namespace Social_Bookmarking_Platform.Controllers
         [HttpPost]
         public async Task<IActionResult> Like(int bookmarkId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obținem ID-ul utilizatorului autentificat
+            var userId = _userManager.GetUserId(User);
             var user = await db.Users.FindAsync(userId);
             var bookmark = await db.Bookmarks.FindAsync(bookmarkId);
 
             if (user != null && bookmark != null)
             {
-                // Verificăm dacă utilizatorul a dat deja like acestui bookmark
+                // Verificam daca utilizatorul a dat deja like acestui bookmark
                 var existingLike = await db.Likes
                     .FirstOrDefaultAsync(l => l.UserId == user.Id && l.BookmarkId == bookmark.Id);
 
-                if (existingLike == null)  // Dacă nu a dat deja like
+                if (existingLike == null)
                 {
                     var like = new Like
                     {
@@ -193,18 +193,19 @@ namespace Social_Bookmarking_Platform.Controllers
                         BookmarkId = bookmark.Id,
                         DateLiked = DateTime.Now
                     };
-
+                    bookmark.LikesCnt++;
                     db.Likes.Add(like);
                     await db.SaveChangesAsync();
                 }
-                else // Dacă a dat deja like
+                else
                 {
-                    db.Likes.Remove(existingLike); // Eliminăm like-ul existent
-                    await db.SaveChangesAsync(); // Salvăm modificările
+                    bookmark.LikesCnt--;
+                    db.Likes.Remove(existingLike);
+                    await db.SaveChangesAsync();
                 }
             }
 
-            return RedirectToAction("Show", new { id = bookmarkId }); // Redirect către pagina bookmark-ului
+            return RedirectToAction("Show", new { id = bookmarkId });
         }
 
 
@@ -285,32 +286,7 @@ namespace Social_Bookmarking_Platform.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "User,Admin")]
-        //public IActionResult New(Bookmark bookmark)
-        //{
-        //    var sanitizer = new HtmlSanitizer();
 
-        //    bookmark.Date = DateTime.Now;
-
-        //    bookmark.UserId = _userManager.GetUserId(User);
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        bookmark.Content = sanitizer.Sanitize(bookmark.Content);
-
-        //        db.Bookmarks.Add(bookmark);
-        //        db.SaveChanges();
-        //        TempData["message"] = "Bookmark-ul a fost adaugat";
-        //        TempData["messageType"] = "alert-success";
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        bookmark.Categ = GetAllCategories();
-        //        return View(bookmark);
-        //    }
-        //}
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
@@ -375,16 +351,18 @@ namespace Social_Bookmarking_Platform.Controllers
         {
             var sanitizer = new HtmlSanitizer();
 
-            Bookmark Bookmark = db.Bookmarks.Find(id);
+            Bookmark bookmark = db.Bookmarks.Find(id);
 
             if (ModelState.IsValid)
             {
-                if ((Bookmark.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
+                if ((bookmark.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
                 {
-                    Bookmark.Title = requestBookmark.Title;
-                    Bookmark.Date = DateTime.Now;
-                    
-                    Bookmark.CategoryId = requestBookmark.CategoryId;
+                    bookmark.Title = requestBookmark.Title;
+                    bookmark.Date = DateTime.Now;
+                    requestBookmark.Content = sanitizer.Sanitize(requestBookmark.Content);
+                    bookmark.Content = requestBookmark.Content;
+
+                    bookmark.CategoryId = requestBookmark.CategoryId;
                     TempData["message"] = "Bookmark-ul a fost modificat";
                     TempData["messageType"] = "alert-success";
                     db.SaveChanges();
@@ -412,21 +390,32 @@ namespace Social_Bookmarking_Platform.Controllers
                                          .Where(bk => bk.Id == id)
                                          .First();
 
-            if ((bookmark.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
+            if (bookmark == null)
             {
+                TempData["message"] = "Bookmark-ul nu a fost gasit";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+            if (bookmark.UserId == currentUserId || User.IsInRole("Admin"))
+            {
+                db.Comments.RemoveRange(bookmark.Comments); // Sterge comentariile asociate
                 db.Bookmarks.Remove(bookmark);
                 db.SaveChanges();
-                TempData["message"] = "Articolul a fost sters";
+
+                TempData["message"] = "Bookmark-ul a fost sters cu succes";
                 TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index");
             }
             else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti un articol care nu va apartine";
+                TempData["message"] = "Nu aveti dreptul sa stergeti acest bookmark";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index");
             }
         }
+
 
         private void SetAccessRights()
         {

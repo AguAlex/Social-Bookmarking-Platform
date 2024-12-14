@@ -13,9 +13,9 @@ namespace Social_Bookmarking_Platform.Models
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100, ErrorMessage = "Titlul nu poate avea mai mult de 100 de caractere")]
         public string? Title { get; set; }
-        public ICollection<Like>? Likes { get; set; }
         public DateTime Date { get; set; }
 
+        public int LikesCnt { get; set; } = 0;
         public string? Content { get; set; }
 
 
@@ -34,6 +34,9 @@ namespace Social_Bookmarking_Platform.Models
         public virtual ICollection<Comment>? Comments { get; set; }
 
         public virtual ICollection<BookmarkBoard>? BookmarkBoards { get; set; }
+
+        public virtual ICollection<Like>? Likes { get; set; } = new List<Like>();
+
 
         [NotMapped]
         public IEnumerable<SelectListItem>? Categ { get; set; }
