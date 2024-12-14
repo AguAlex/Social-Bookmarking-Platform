@@ -210,13 +210,13 @@ namespace Social_Bookmarking_Platform.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Show(int id)
         {
-            Bookmark bookmark = db.Bookmarks.Include("Category")
-                                         .Include("Comments")
-                                         .Include("User")
-                                         .Include("Comments.User")
-                              .Where(art => art.Id == id)
-                              .First();
-            
+            Bookmark bookmark = db.Bookmarks
+                          .Include("Category")
+                          .Include("Comments")
+                          .Include("User")
+                          .Include("Comments.User")
+                          .FirstOrDefault(art => art.Id == id);
+
             // Adaugam board-urile utilizatorului pentru dropdown
             ViewBag.UserBoards = db.Boards
                                       .Where(b => b.UserId == _userManager.GetUserId(User))

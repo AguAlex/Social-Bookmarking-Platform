@@ -4,31 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Social_Bookmarking_Platform.Data;
+using Social_Bookmarking_Platform.Data.Migrations;
 using Social_Bookmarking_Platform.Models;
+using System.Net.NetworkInformation;
 
 namespace Social_Bookmarking_Platform.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext db;
-
+        private readonly IWebHostEnvironment _env;
         private readonly UserManager<ApplicationUser> _userManager;
-
         private readonly RoleManager<IdentityRole> _roleManager;
-
         public UsersController(
-            ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager
-            )
+        ApplicationDbContext context,
+        IWebHostEnvironment env,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager
+        )
         {
             db = context;
-
+            _env = env;
             _userManager = userManager;
-
             _roleManager = roleManager;
         }
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
             var users = from user in db.Users
@@ -39,19 +39,32 @@ namespace Social_Bookmarking_Platform.Controllers
 
             return View();
         }
-
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> Show(string id)
         {
-            ApplicationUser user = db.Users.Find(id);
-            var roles = await _userManager.GetRolesAsync(user);
+            var currentUserId = _userManager.GetUserId(User);
 
+            var user = await db.Users
+                               .Include(u => u.Boards)
+                               .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (currentUserId != id)
+            {
+                user.Boards = user.Boards.Where(b => !b.IsPrivate).ToList();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
             ViewBag.Roles = roles;
 
             ViewBag.UserCurent = await _userManager.GetUserAsync(User);
 
+            ViewBag.UserBoards = user.Boards;
+
             return View(user);
         }
 
+
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Edit(string id)
         {
             ApplicationUser user = db.Users.Find(id);
@@ -66,40 +79,80 @@ namespace Social_Bookmarking_Platform.Controllers
                                               .First();
             return View(user);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> Edit(string id, ApplicationUser newData, [FromForm] string newRole)
+        public async Task<ActionResult> Edit(string id, ApplicationUser newData, [FromForm] string newRole, IFormFile Image)
         {
+            // Găsirea utilizatorului în baza de date
             ApplicationUser user = db.Users.Find(id);
 
-            user.AllRoles = GetAllRoles();
+            if (user == null)
+            {
+                return NotFound();
+            }
 
+            // Asigurăm lista de roluri
+            user.AllRoles = GetAllRoles();
 
             if (ModelState.IsValid)
             {
+                // Actualizăm informațiile de bază ale utilizatorului
                 user.UserName = newData.UserName;
                 user.Email = newData.Email;
                 user.FirstName = newData.FirstName;
                 user.LastName = newData.LastName;
                 user.PhoneNumber = newData.PhoneNumber;
 
+                // Gestiunea rolurilor utilizatorului
                 var roles = db.Roles.ToList();
-
                 foreach (var role in roles)
                 {
-                    // Scoatem userul din rolurile anterioare
+                    // Eliminăm utilizatorul din rolurile anterioare
                     await _userManager.RemoveFromRoleAsync(user, role.Name);
                 }
-                // Adaugam noul rol selectat
+
+                // Adăugăm noul rol selectat
                 var roleName = await _roleManager.FindByIdAsync(newRole);
-                await _userManager.AddToRoleAsync(user, roleName.ToString());
+                if (roleName != null)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName.Name);
+                }
 
+                // Gestionăm imaginea de profil dacă este încărcată
+                if (Image != null && Image.Length > 0)
+                {
+                    // Verificăm extensia fișierului
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".mp4", ".mov" };
+                    var fileExtension = Path.GetExtension(Image.FileName).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("UserProfileImage", "Fișierul trebuie să fie o imagine (jpg, jpeg, png, gif) sau un video (mp4, mov).");
+                        return View(user);
+                    }
+
+                    // Cale stocare imagine
+                    var storagePath = Path.Combine(_env.WebRootPath, "images", Image.FileName);
+                    var databaseFileName = "/images/" + Image.FileName;
+
+                    // Salvăm fișierul pe server
+                    using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                    {
+                        await Image.CopyToAsync(fileStream);
+                    }
+
+                    // Actualizăm calea imaginii în baza de date
+                    user.ProfileImage = databaseFileName;
+                }
+
+                // Salvăm modificările în baza de date
                 db.SaveChanges();
-
             }
-            return RedirectToAction("Index");
+
+            // Redirecționăm către acțiunea Show cu id-ul utilizatorului
+            return RedirectToAction("Show", new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Delete(string id)
         {

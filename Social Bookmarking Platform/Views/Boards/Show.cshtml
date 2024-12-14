@@ -5,7 +5,18 @@
 
     <div class="col-12">
 
-        <h5 class="card-title mt-5 mb-3" asp-for="Name">@Model.Title</h5>
+        <h5 class="card-title" name="Name">
+            @Model.Title
+            @if (Model.IsPrivate)
+            {
+                <span class="badge bg-secondary ms-2 align-middle">Privat</span>
+            }
+            else
+            {
+                <span class="badge bg-success ms-2 align-middle">Public</span>
+            }
+        </h5>
+
        
 
         @if (ViewBag.EsteAdmin)

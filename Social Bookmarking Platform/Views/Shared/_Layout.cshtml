@@ -31,19 +31,19 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="Index">Afisare bookmarks</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="Index">My Bookmarks</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="New">Adaugare bookmark</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="New">Add Bookmark</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Afisare categorii</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Show Categories</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Afisare utilizatori</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Show Users</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Boards" asp-action="Index">Boards</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Boards" asp-action="Index">My Boards</a>
                             </li>
                         }
                         @if (User.IsInRole("User"))
@@ -52,13 +52,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="Index">Afisare bookmarks</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="Index">My Bookmarks</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="New">Adaugare bookmark</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="New">Add bookmark</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Boards" asp-action="Index">Boards</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Boards" asp-action="Index">My Boards</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Show users</a>
                             </li>
                         }
 

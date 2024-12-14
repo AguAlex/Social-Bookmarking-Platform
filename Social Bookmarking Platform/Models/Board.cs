@@ -10,6 +10,8 @@ namespace Social_Bookmarking_Platform.Models
         [Required(ErrorMessage = "Titulul board-ului este obligatoriu")]
         public string Title { get; set; }
 
+        public bool IsPrivate { get; set; }
+
         public string? UserId { get; set; }
         public virtual ApplicationUser? User { get; set; }
 

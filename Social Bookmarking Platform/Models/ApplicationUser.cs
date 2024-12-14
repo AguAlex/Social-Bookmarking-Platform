@@ -10,11 +10,13 @@ namespace Social_Bookmarking_Platform.Models
 
         public virtual ICollection<Bookmark>? Bookmarks { get; set; }
 
-        public virtual ICollection<Board>? Boards { get; set; }
+        public ICollection<Board> Boards { get; set; } = new List<Board>();
 
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
+
+        public string? ProfileImage {  get; set; }
 
         [NotMapped]
         public IEnumerable<SelectListItem>? AllRoles { get; set; }
