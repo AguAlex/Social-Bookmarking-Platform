@@ -82,58 +82,47 @@ namespace Social_Bookmarking_Platform.Controllers
         {
             SetAccessRights();
 
+            var board = db.Boards
+                          .Include("BookmarkBoards.Bookmark.Category")
+                          .Include("BookmarkBoards.Bookmark.User")
+                          .Include("User")
+                          .FirstOrDefault(b => b.Id == id);
+
+            if (board == null)
+            {
+                TempData["message"] = "Resursa cautata nu poate fi gasita";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Bookmarks");
+            }
+
+            var currentUserId = _userManager.GetUserId(User);
+
             if (User.IsInRole("User"))
             {
-                var boards = db.Boards
-                                  .Include("BookmarkBoards.Bookmark.Category")
-                                  .Include("BookmarkBoards.Bookmark.User")
-                .Include("User")
-                                  .Where(b => b.Id == id)
-                                  .Where(b => b.UserId == _userManager.GetUserId(User))
-                                  .FirstOrDefault();
-
-                if (boards == null)
+                // Daca board-ul nu este privat sau utilizatorul este proprietarul
+                if (!board.IsPrivate || board.UserId == currentUserId)
                 {
-                    TempData["message"] = "Resursa cautata nu poate fi gasita";
+                    return View(board);
+                }
+                else
+                {
+                    TempData["message"] = "Nu aveti drepturi pentru a accesa acest board";
                     TempData["messageType"] = "alert-danger";
                     return RedirectToAction("Index", "Bookmarks");
                 }
-
-                return View(boards);
             }
-
-            else
             if (User.IsInRole("Admin"))
             {
-                var boards = db.Boards
-                                  .Include("BookmarkBoards.Bookmark.Category")
-                                  .Include("BookmarkBoards.Bookmark.User")
-                                  .Include("User")
-                                  .Where(b => b.Id == id)
-                                  .FirstOrDefault();
-
-
-                if (boards == null)
-                {
-                    TempData["message"] = "Resursa cautata nu poate fi gasita";
-                    TempData["messageType"] = "alert-danger";
-                    return RedirectToAction("Index", "Bookmark");
-                }
-
-
-                return View(boards);
+                return View(board);
             }
 
-            else
-            {
-                TempData["message"] = "Nu aveti drepturi";
-                TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index", "Bookmark");
-            }
+            TempData["message"] = "Nu aveti drepturi";
+            TempData["messageType"] = "alert-danger";
+            return RedirectToAction("Index", "Bookmarks");
         }
 
+
         // Randarea formularului in care se completeaza datele unui bookmark
-        // [HttpGet] - se executa implicit
         [Authorize(Roles = "User,Admin")]
         public IActionResult New()
         {

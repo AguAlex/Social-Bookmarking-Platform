@@ -40,7 +40,6 @@ namespace Social_Bookmarking_Platform.Controllers
                  .Include("Category")
                  .Include("User");
 
-            //ViewBag.FirstArticle = bookmarks.First();
             ViewBag.Bookmarks = bookmarks;
 
             // MOTOR DE CAUTARE
@@ -48,11 +47,11 @@ namespace Social_Bookmarking_Platform.Controllers
             if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
             {
                 search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
-                // Cautare in bookmark (Title)
+                // Cautare in bookmark (Title si Content)
                 List<int> bookmarkIds = db.Bookmarks.Where
                                         (
                                          bk => bk.Title.Contains(search)
-                                         //|| bk.Content.Contains(search)
+                                         || bk.Content.Contains(search)
                                         ).Select(a => a.Id).ToList();
 
                 // Cautare in comentarii (Content)
