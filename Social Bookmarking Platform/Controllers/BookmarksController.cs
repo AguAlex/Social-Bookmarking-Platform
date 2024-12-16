@@ -31,7 +31,6 @@ namespace Social_Bookmarking_Platform.Controllers
             _roleManager = roleManager;
         }
 
-        // POST: Procesează datele trimise de utilizator
         [HttpPost]
         public async Task<IActionResult> New(Bookmark bookmark, IFormFile Image)
         {
@@ -39,19 +38,18 @@ namespace Social_Bookmarking_Platform.Controllers
             bookmark.UserId = _userManager.GetUserId(User);
             if (Image != null && Image.Length > 0)
             {
-                // Verificăm extensia
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".mp4", ".mov" };
                 var fileExtension = Path.GetExtension(Image.FileName).ToLower();
                 if (!allowedExtensions.Contains(fileExtension))
                 {
-                    ModelState.AddModelError("BookmarkImage", "Fișierul trebuie să fie o imagine(jpg, jpeg, png, gif) sau un video(mp4, mov).");
-                return View(bookmark);
+                    ModelState.AddModelError("BookmarkImage", "Fisierul trebuie sa fie o imagine(jpg, jpeg, png, gif) sau un video(mp4, mov).");
+                    return View(bookmark);
                 }
                 // Cale stocare
                 var storagePath = Path.Combine(_env.WebRootPath, "images",
                 Image.FileName);
                 var databaseFileName = "/images/" + Image.FileName;
-                // Salvare fișier
+                // Salvare fisier
                 using (var fileStream = new FileStream(storagePath, FileMode.Create))
                 {
                     await Image.CopyToAsync(fileStream);
@@ -117,7 +115,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
 
                 // Lista bookmark-urilor care contin cuvantul cautat
-                // fie in articol -> Title si Content
+                // fie in bookmark -> Title si Content
                 // fie in comentarii -> Content
                 bookmarks = db.Bookmarks.Where(bookmark => mergedIds.Contains(bookmark.Id))
                                       .Include("Category")

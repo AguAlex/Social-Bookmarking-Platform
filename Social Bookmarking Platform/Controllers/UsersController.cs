@@ -107,7 +107,6 @@ namespace Social_Bookmarking_Platform.Controllers
                 user.FirstName = newData.FirstName;
                 user.LastName = newData.LastName;
                 user.PhoneNumber = newData.PhoneNumber;
-                user.ProfileImage = newData.ProfileImage;
 
 
                 // Cautam toate rolurile din baza de date

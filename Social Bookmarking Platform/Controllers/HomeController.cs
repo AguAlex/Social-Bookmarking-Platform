@@ -80,7 +80,7 @@ namespace Social_Bookmarking_Platform.Controllers
             // AFISARE PAGINATA
 
             // Alegem sa afisam 3 articole pe pagina
-            int _perPage = 6;
+            int _perPage = 3;
 
             // Fiind un numar variabil de bookmarks, verificam de fiecare data utilizand 
             // metoda Count()
