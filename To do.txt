@@ -1,4 +1,2 @@
-- de reparat sistemul de like uri
+- Startup.cs autentificare cu google eventual
 - de facut continut cu summernote
-- de modificat controllere si views continutul
-- emoji de like la like uri
