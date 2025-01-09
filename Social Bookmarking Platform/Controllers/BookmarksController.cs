@@ -345,7 +345,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Edit(int id, Bookmark requestBookmark)
+        public async Task<IActionResult> Edit(int id, Bookmark requestBookmark, IFormFile Image)
         {
             var sanitizer = new HtmlSanitizer();
 
@@ -353,28 +353,74 @@ namespace Social_Bookmarking_Platform.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check permissions
                 if ((bookmark.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
                 {
+                    // Update bookmark fields
                     bookmark.Title = requestBookmark.Title;
                     bookmark.Date = DateTime.Now;
                     requestBookmark.Content = sanitizer.Sanitize(requestBookmark.Content);
                     bookmark.Content = requestBookmark.Content;
 
+                    // Check if a new image is uploaded
+                    if (Image != null && Image.Length > 0)
+                    {
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".mp4", ".mov" };
+                        var fileExtension = Path.GetExtension(Image.FileName).ToLower();
+
+                        if (!allowedExtensions.Contains(fileExtension))
+                        {
+                            ModelState.AddModelError("BookmarkImage", "Fișierul trebuie să fie o imagine (jpg, jpeg, png, gif) sau un video (mp4, mov).");
+                            return View(bookmark);
+                        }
+
+                        // Define storage path
+                        var storagePath = Path.Combine(_env.WebRootPath, "images", Image.FileName);
+                        var databaseFileName = "/images/" + Image.FileName;
+
+                        // Delete the old image if it exists
+                        if (!string.IsNullOrEmpty(bookmark.Image))
+                        {
+                            var existingFilePath = Path.Combine(_env.WebRootPath, bookmark.Image.TrimStart('/'));
+                            if (System.IO.File.Exists(existingFilePath))
+                            {
+                                System.IO.File.Delete(existingFilePath);
+                            }
+                        }
+
+                        // Save the new image
+                        using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                        {
+                            await Image.CopyToAsync(fileStream);
+                        }
+
+                        // Update the image path in the database
+                        bookmark.Image = databaseFileName;
+                    }
+
+                    // If no new image is uploaded, retain the existing image
+                    //bookmark.Image ??= requestBookmark.Image;
+
+                    // Update the category
                     bookmark.CategoryId = requestBookmark.CategoryId;
+
+                    // Save changes
                     TempData["message"] = "Bookmark-ul a fost modificat";
                     TempData["messageType"] = "alert-success";
                     db.SaveChanges();
+
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui bookmark care nu va apartine";
+                    TempData["message"] = "Nu aveți dreptul să faceți modificări asupra unui bookmark care nu vă aparține.";
                     TempData["messageType"] = "alert-danger";
                     return RedirectToAction("Index");
                 }
             }
             else
             {
+                // Reload categories and return the view
                 requestBookmark.Categ = GetAllCategories();
                 return View(requestBookmark);
             }
