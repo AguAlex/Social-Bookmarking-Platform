@@ -16,7 +16,7 @@ namespace Social_Bookmarking_Platform.Models
 
         public string? LastName { get; set; }
 
-        public string? ProfileImage { get; set; } = "/images/calude.jpg";
+        public string? ProfileImage { get; set; } = "/images/unknown.jpg";
 
         [NotMapped]
         public IEnumerable<SelectListItem>? AllRoles { get; set; }
