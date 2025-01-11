@@ -1,6 +1,7 @@
 ﻿@model Social_Bookmarking_Platform.Models.Bookmark
 
 @if (TempData["message"] != null)
+
 {
     <div class="alert @ViewBag.Alert p-3 rounded-3 text-center mb-5">
         @ViewBag.Message
@@ -8,163 +9,196 @@
 }
 <br />
 
+<div class="card rounded shadow-lg p-4" style="border-radius: 15px;">
+    <div class="card-title p-3 text-center bg-dark text-white" style="position: relative;">
+        <h4 style="font-size: 1.5rem; margin: 0; font-weight: bold; text-transform: uppercase; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);">
+            @Html.Raw(Model.Title)
+        </h4>
+    </div>
 
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-3">
+                        <img src="@Model.Image" alt="Bookmark Image"
+                             class="img-fluid rounded shadow-sm"
+                             style="width: 100%; max-width: 300px; height: 200px; object-fit: cover;">
+                    </div>
+                    <p class="text-muted flex-grow-1" style="font-size: 1rem; line-height: 1.5; font-style: italic;">@Model.Content</p>
+                    <div class="d-flex justify-content-between flex-row mt-3 text-muted" style="font-size: 0.9rem;">
+                        <div><i class="bi bi-globe me-1"></i>@Model.Category.Title</div>
+                        @if (ViewBag.existingLike != null)
 
+                        {
+                            <div><i class="bi bi-heart-fill text-danger me-1"></i>@Model.LikesCnt</div>
+                        }
 
-<div class="card">
+                        else
 
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <div class="card rounded shadow h-100" style="border-radius: 15px;">
-                        <div class="card-title p-3 text-center bg-dark text-white">
-                            <h4>@Html.Raw(Model.Title)</h4>
-                        </div>
-
-                        <div class="card-body d-flex flex-column">
-                            <div class="text-center mb-3">
-                                <img src="@Model.Image" alt="Bookmark Image"
-                                     class="img-fluid rounded shadow"
-                                     style="width: 100%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 15px;">
-                            </div>
-                            <p class="text-muted flex-grow-1">@Model.Content</p>
-                            <div class="d-flex justify-content-between flex-row mt-3">
-                                <div><i class="bi bi-globe"></i> @Model.Category.Title</div>
-                                <div><i class="bi bi-heart"></i> @Model.LikesCnt</div>
-                                <div><i class="bi bi-person"></i> @Model.User.UserName</div>
-                            </div>
-                        </div>
+                        {
+                            <div><i class="bi bi-heart text-danger me-1"></i>@Model.LikesCnt</div>
+                        }
+                        <div style="font-weight: bold; color: #007bff;"><i class="bi bi-person-circle me-1"></i>@Model.User.UserName</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="d-flex flex-row justify-content-between">
-            <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Edit" asp-route-id="@Model.Id">Editeaza bookmark</a>
+    <div class="d-flex flex-row justify-content-between mt-3">
+        <a class="btn btn-success" asp-controller="Bookmarks" asp-action="Edit" asp-route-id="@Model.Id">Editeaza bookmark</a>
         <form method="post" asp-controller="Bookmarks" asp-action="Like" asp-route-bookmarkId="@Model.Id">
+            <button type="submit" class="btn btn-link p-0">
+                <!-- Dacă utilizatorul a dat "like", se afișează inima plină, altfel inima goală -->
+                @if (ViewBag.existingLike != null)
 
-            <button type="submit" class="btn btn-primary">
-                Like <span class="badge bg-secondary">@ViewBag.LikesCount</span>
+
+
+                {
+                    <i class="bi bi-heart-fill text-danger"></i> <!-- Inimă plină pentru like -->
+                }
+                else
+
+                {
+                    <i class="bi bi-heart text-danger"></i> <!-- Inimă goală pentru a da like -->
+                }
+                <span class="badge bg-secondary">@ViewBag.LikesCount</span> <!-- Numărul de likes -->
             </button>
         </form>
 
-            <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-id="@Model.Id">
+        <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-id="@Model.Id">
+            <button class="btn btn-danger" type="submit">
+                <i class="bi bi-trash me-1"></i>Sterge bookmark
+            </button>
+        </form>
+    </div>
 
-                <button class="btn btn-danger" type="submit">Sterge bookmark</button>
-
-            </form>
-
-        </div>
-    
-        
-    <form method="post" asp-controller="Bookmarks" asp-action="AddBoard">
+    <form method="post" asp-controller="Bookmarks" asp-action="AddBoard" class="mt-4">
         <input type="hidden" name="BookmarkId" value="@Model.Id" />
         <div class="d-flex flex-row justify-content-center p-3 border-1 border-top">
             <div>
                 <select name="BoardId" class="form-control">
                     <option selected>Adauga acest articol intr-o colectie</option>
                     @foreach (var board in ViewBag.UserBoards)
+
                     {
                         <option value="@board.Id">@board.Title</option>
                     }
                 </select>
             </div>
             <div>
-                <input type="submit" class="btn btn-success alert-success" value="+" />
+                <input type="submit" class="btn btn-outline-success" value="+" style="font-weight: bold;" />
             </div>
         </div>
     </form>
-    
 
-</div>
+    @foreach (var comm in Model.Comments)
 
-<br />
-<br />
+    {
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-2"></div>
 
-@foreach (var comm in Model.Comments)
-{
-    <div class="container">
+                <div class="col-md-8">
+                    <div class="card shadow-sm p-3 mb-3 rounded" style="border-radius: 10px;">
+                        <p>@comm.Content</p>
+                        <small style="color: #6c757d;">@comm.Date</small>
+                        <strong style="color: #007bff;"><i class="bi bi-person-circle me-1"></i>@comm.User.UserName</strong>
+
+                        @if (comm.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin == true)
+
+                        {
+                            <div class="d-flex mt-3">
+                                <a class="btn btn-outline-primary me-2" asp-controller="Comments" asp-action="Edit" asp-route-id="@comm.Id">
+                                    <i class="bi bi-pencil-square"></i> Editeaza
+                                </a>
+                                <form method="post" asp-controller="Comments" asp-action="Delete" asp-route-id="@comm.Id">
+                                    <button class="btn btn-outline-danger" type="submit">
+                                        <i class="bi bi-trash"></i> Sterge
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    }
+
+    <div class="container mt-5">
         <div class="row">
             <div class="col-md-2"></div>
 
             <div class="col-md-8">
+                <div class="card p-4 shadow rounded" style="border-radius: 15px;">
+                    <form method="post" asp-controller="Bookmarks" asp-action="Show">
+                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
 
-                <div>
+                        <label for="Content" class="form-label">Continut comentariu</label>
+                        <textarea id="Content" name="Content" class="form-control" style="border-radius: 10px;"></textarea>
 
-                    <p>@comm.Content</p>
-                    <small>@comm.Date</small>
-                    <strong><i class="bi bi-person"> @comm.User.UserName</i></strong>
-
+                        <button class="btn btn-success mt-3" type="submit">
+                            <i class="bi bi-plus-circle me-1"></i> Adauga comentariul
+                        </button>
+                    </form>
                 </div>
-                <br>
-
-                @if (comm.UserId == ViewBag.UserCurent || ViewBag.EsteAdmin == true)
-                {
-                    <div class="d-flex">
-                        <div>
-                            <a class="btn btn-outline-primary" asp-controller="Comments" asp-action="Edit" asp-route-id="@comm.Id">
-                                <i class="bi bi-pencil-square"></i> Editeaza
-                            </a>
-
-                        </div>
-                        <div>
-                            <form method="post" asp-controller="Comments" asp-action="Delete" asp-route-id="@comm.Id">
-
-                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
-
-                            </form>
-                        </div>
-                    </div>
-                }
-
-                <br />
             </div>
 
             <div class="col-md-2"></div>
-
         </div>
-
     </div>
-}
-
-
-@* Afisarea formularului in care se poate adauga un comentariu *@
-
-<div class="container">
-
-    <div class="row">
-
-        <div class="col-md-2"></div>
-
-        <div class="col-md-8">
-
-            <div class="card">
-
-                <form method="post" asp-controller="Bookmarks" asp-action="Show">
-
-                    <div class="card-body">
-
-                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
-
-                        <label>Continut comentariu</label>
-                        <textarea class="form-control" name="Content"></textarea>
-                        <!--
-                        <span asp-validation-for="Content" class="text-danger"></span>
-                        -->
-                        <br /><br />
-
-                        <button class="btn btn-success" type="submit">Adauga comentariul</button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-2"></div>
-
-    </div>
-
 </div>
+
+<style>
+    .card-title {
+        font-family: 'Arial', sans-serif;
+        letter-spacing: 1px;
+        padding: 10px;
+    }
+
+    .card-body p {
+        margin-top: 10px;
+        color: #6c757d;
+    }
+
+    .card-body .bi-person-circle {
+        font-size: 1.2rem;
+        margin-right: 5px;
+    }
+
+    .card-footer a:hover {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    select {
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+        textarea:focus, input:focus, select:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+    .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+</style>

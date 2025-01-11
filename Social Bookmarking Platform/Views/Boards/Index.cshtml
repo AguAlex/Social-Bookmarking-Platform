@@ -10,7 +10,7 @@
 
 <br />
 
-<a asp-controller="Boards" asp-action="New" class="btn btn-success rounded-pill mb-5">
+<a asp-controller="Boards" asp-action="New" class="btn btn-success rounded-pill mb-5 shadow-sm">
     <i class="bi bi-plus"></i> Adăugare board
 </a>
 
@@ -18,26 +18,39 @@
 
     @foreach (var board in ViewBag.Boards)
     {
-        <div class="col-4 mb-4">
-
-            <div class="card">
-
-                <div class="card-body">
-
-                    <h5 class="card-title" name="Name">@board.Title</h5>
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card rounded shadow h-100" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary" style="font-size: 1.25rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                        @board.Title
+                    </h5>
 
                     @if (ViewBag.EsteAdmin)
                     {
-                        <div><i class="bi bi-person"> Creat de: </i> @board.User.UserName</div>
+                        <div class="text-muted" style="font-size: 0.9rem;">
+                            <i class="bi bi-person-circle me-1" style="color: #007bff;"></i>Creat de: <span style="font-weight: bold;">@board.User.UserName</span>
+                        </div>
                     }
 
                     <br />
 
-                    <a asp-controller="Boards" asp-action="Show" asp-route-id="@board.Id" class="btn alert-success">Afisare Colectie</a>
-
+                    <a asp-controller="Boards" asp-action="Show" asp-route-id="@board.Id" class="btn btn-outline-success rounded-pill" style="font-size: 0.9rem;">
+                        <i class="bi bi-folder"></i> Afișare Colectie
+                    </a>
                 </div>
             </div>
         </div>
     }
 
 </div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+        font-family: 'Arial', sans-serif;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>

@@ -1,31 +1,56 @@
-﻿
 ﻿@{
     ViewBag.Title = "Lista categorii";
 }
 
-<h2>@ViewBag.Title</h2>
-<br />
+<h2 class="text-center text-uppercase mb-5" style="font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+    <i class="bi bi-list"></i> @ViewBag.Title
+</h2>
 
 @if (TempData.ContainsKey("message"))
-{
-    <h1>@ViewBag.message</h1>
-}
 
-<br />
-
-@foreach (Social_Bookmarking_Platform.Models.Category category in ViewBag.Categories)
 {
-    <div class="form-group">
-        <label asp-for="@category.Title" class="form-label">Denumire categorie</label>
-        <div><i class="bi bi-globe"></i> @category.Title</div>
+    <div class="alert alert-info text-center shadow-sm rounded-pill">
+        <i class="bi bi-info-circle"></i> @ViewBag.message
     </div>
-    <br />
-    <a class="btn alert-success" asp-controller="Categories" asp-action="Show" asp-route-id="@category.Id">Afisare categorie</a>
-    <a class="btn alert-success" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">Editare categorie</a>
-    <br />
-    <br />
-
 }
-<br />
-<a class="btn btn-success" asp-controller="Categories" asp-action="New">Adauga o noua categorie</a>
-<br />
+
+<div class="row">
+    @foreach (Social_Bookmarking_Platform.Models.Category category in ViewBag.Categories)
+
+    {
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card rounded shadow h-100" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success" style="font-size: 1.25rem; font-weight: bold; letter-spacing: 0.5px;">
+                        <i class="bi bi-folder-fill me-1"></i>@category.Title
+                    </h5>
+                    <div class="d-flex justify-content-center gap-2 mt-3">
+                        <a class="btn btn-outline-primary rounded-pill" asp-controller="Categories" asp-action="Show" asp-route-id="@category.Id" style="font-size: 0.9rem;">
+                            <i class="bi bi-eye"></i> Afișare categorie
+                        </a>
+                        <a class="btn btn-outline-secondary rounded-pill" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id" style="font-size: 0.9rem;">
+                            <i class="bi bi-pencil"></i> Editare categorie
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-5">
+    <a class="btn btn-success rounded-pill shadow-sm" asp-controller="Categories" asp-action="New" style="font-size: 1rem; padding: 10px 20px;">
+        <i class="bi bi-plus-circle"></i> Adaugă o nouă categorie
+    </a>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        font-family: 'Verdana', sans-serif;
+    }
+</style>

@@ -1,27 +1,73 @@
 ﻿@model Social_Bookmarking_Platform.Models.Bookmark
 
 <div class="col-12 col-md-6 col-lg-4 mb-4">
-    <div class="card rounded shadow h-100" style="border-radius: 15px;">
-        <div class="card-title p-3 text-center bg-dark text-white">
-            <h4>@Html.Raw(Model.Title)</h4>
+    <div class="card rounded shadow h-100" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;">
+        <div class="card-title p-3 text-center bg-dark text-white" style="position: relative;">
+            <h4 style="font-size: 1.4rem; margin: 0; font-weight: bold; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">
+                @Html.Raw(Model.Title)
+            </h4>
         </div>
 
         <div class="card-body d-flex flex-column">
             <div class="text-center mb-3">
                 <img src="@Model.Image" alt="Bookmark Image"
-                     class="img-fluid rounded shadow"
-                     style="width: 100%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 15px;">
+                     class="img-fluid rounded shadow-sm"
+                     style="width: 100%; max-width: 300px; height: 200px; object-fit: cover;">
             </div>
-            <p class="text-muted flex-grow-1">@Model.Content</p>
-            <div class="d-flex justify-content-between flex-row mt-3">
-                <div><i class="bi bi-globe"></i> @Model.Category.Title</div>
-                <div><i class="bi bi-heart"></i> @Model.LikesCnt</div>
-                <div><i class="bi bi-person"></i> @Model.User.UserName</div>
+            <p class="text-muted flex-grow-1" style="font-size: 0.9rem; line-height: 1.4;">@Model.Content</p>
+            <div class="d-flex justify-content-between flex-row mt-3 text-muted" style="font-size: 0.85rem;">
+                <div><i class="bi bi-globe me-1"></i>@Model.Category.Title</div>
+                @if (@Model.ExistingLike==false)
+
+                {
+                    <div><i class="bi bi-heart-fill text-danger me-1"></i>@Model.LikesCnt</div>
+                }
+
+                else
+
+                {
+                    <div><i class="bi bi-heart text-danger"></i> @Model.LikesCnt</div>
+                }
+                <div style="font-weight: bold; color: #007bff;"><i class="bi bi-person-circle me-1"></i>@Model.User.UserName</div>
             </div>
         </div>
 
-        <div class="card-footer text-center">
-            <a class="btn btn-outline-success" href="/Bookmarks/Show/@Model.Id">Vezi Bookmarkul</a>
+        <div class="card-footer text-center bg-light">
+            <a class="btn btn-outline-success" href="/Bookmarks/Show/@Model.Id" style="font-size: 0.9rem;">Vezi Bookmarkul</a>
         </div>
     </div>
 </div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-footer {
+        border-top: 1px solid #e9ecef;
+    }
+
+    .card-title {
+        font-family: 'Arial', sans-serif;
+        letter-spacing: 1px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .card-body p {
+        margin-top: 10px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .card-footer a:hover {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .card-body .bi-person-circle {
+        font-size: 1.1rem;
+        margin-right: 5px;
+    }
+</style>

@@ -71,7 +71,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
 
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
             var bookmarks = db.Bookmarks
@@ -157,6 +157,15 @@ namespace Social_Bookmarking_Platform.Controllers
             // Trimitem bookmarks cu ajutorul unui ViewBag catre View-ul corespunzator
             ViewBag.Bookmarks = paginatedBookmarks;
 
+            foreach (var bookmark in paginatedBookmarks)
+            {
+                var existingLike = await db.Likes
+                    .FirstOrDefaultAsync(l => l.UserId == userId && l.BookmarkId == bookmark.Id);
+
+                // Adăugăm rezultatul în ViewBag pentru fiecare bookmark
+                bookmark.ExistingLike = existingLike != null ;
+            }
+
 
             if (search != "")
             {
@@ -183,6 +192,8 @@ namespace Social_Bookmarking_Platform.Controllers
                 var existingLike = await db.Likes
                     .FirstOrDefaultAsync(l => l.UserId == user.Id && l.BookmarkId == bookmark.Id);
 
+                bookmark.ExistingLike = existingLike != null ;
+
                 if (existingLike == null)
                 {
                     var like = new Like
@@ -208,7 +219,7 @@ namespace Social_Bookmarking_Platform.Controllers
 
 
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Show(int id)
+        public async Task<IActionResult> Show(int id)
         {
             Bookmark bookmark = db.Bookmarks
                           .Include("Category")
@@ -228,6 +239,17 @@ namespace Social_Bookmarking_Platform.Controllers
                                       .ToList();
 
             ViewBag.LikesCount = numberOfLikes;
+            var userId = _userManager.GetUserId(User);
+            
+            
+
+            
+            var existingLike =   await db.Likes
+                   .FirstOrDefaultAsync(l => l.UserId == userId && l.BookmarkId == id);
+
+            ViewBag.existingLike = existingLike;
+                
+                 
 
             SetAccessRights();
             

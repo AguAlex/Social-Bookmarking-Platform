@@ -16,6 +16,8 @@ namespace Social_Bookmarking_Platform.Models
         public DateTime Date { get; set; }
 
         public int LikesCnt { get; set; } = 0;
+
+        public bool ExistingLike { get; set; } = false;
         public string? Content { get; set; }
 
 
