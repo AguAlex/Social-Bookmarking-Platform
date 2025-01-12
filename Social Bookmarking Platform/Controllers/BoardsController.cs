@@ -32,11 +32,8 @@ namespace Social_Bookmarking_Platform.Controllers
                 _roleManager = roleManager;
             }
 
-            // Toti utilizatorii pot vedea Bookmark-urile existente in platforma
-            // Fiecare utilizator vede bookmark-urile pe care le-a creat
-            // Userii cu rolul de Admin pot sa vizualizeze toate bookmark-urile existente
-            // HttpGet - implicit
-            [Authorize(Roles = "User,Admin")]
+            
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
             if (TempData.ContainsKey("message"))
@@ -140,11 +137,10 @@ namespace Social_Bookmarking_Platform.Controllers
             {
                 db.Boards.Add(bd);
                 db.SaveChanges();
-                TempData["message"] = "Colectia a fost adaugata";
+                TempData["message"] = "Board-ul a fost adaugat";
                 TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index");
             }
-
             else
             {
                 return View(bd);

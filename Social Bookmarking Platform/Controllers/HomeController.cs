@@ -54,7 +54,7 @@ namespace Social_Bookmarking_Platform.Controllers
                                          || bk.Content.Contains(search)
                                         ).Select(a => a.Id).ToList();
 
-                // Cautare in comentarii (Content)
+                // Cautare in comentarii
                 List<int> bookmarkIdsOfCommentsWithSearchString = db.Comments
                                         .Where
                                         (
@@ -65,10 +65,6 @@ namespace Social_Bookmarking_Platform.Controllers
                 // Se formeaza o singura lista formata din toate id-urile selectate anterior
                 List<int> mergedIds = bookmarkIds.Union(bookmarkIdsOfCommentsWithSearchString).ToList();
 
-
-                // Lista bookmark-urilor care contin cuvantul cautat
-                // fie in articol -> Title si Content
-                // fie in comentarii -> Content
                 bookmarks = db.Bookmarks.Where(bookmark => mergedIds.Contains(bookmark.Id))
                                       .Include("Category")
                                       .Include("User")

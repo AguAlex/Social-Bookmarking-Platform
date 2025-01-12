@@ -20,3 +20,42 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+.card-footer a {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card-footer a:hover {
+    background-color: #28a745;
+    color: white;
+    }
+
+.card-title {
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 1px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.card-body p {
+    margin-top: 10px;
+    color: #6c757d;
+    font-style: italic;
+ 
+}
+
+
+.card-body .bi-person-circle {
+    font-size: 1.1rem;
+    margin-right: 5px;
+}
