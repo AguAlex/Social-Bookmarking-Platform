@@ -1,2 +1,0 @@
-- Startup.cs autentificare cu google eventual
-- de facut continut cu summernote

@@ -375,16 +375,13 @@ namespace Social_Bookmarking_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                // Check permissions
                 if ((bookmark.UserId == _userManager.GetUserId(User)) || User.IsInRole("Admin"))
                 {
-                    // Update bookmark fields
                     bookmark.Title = requestBookmark.Title;
                     bookmark.Date = DateTime.Now;
                     requestBookmark.Content = sanitizer.Sanitize(requestBookmark.Content);
                     bookmark.Content = requestBookmark.Content;
 
-                    // Check if a new image is uploaded
                     if (Image != null && Image.Length > 0)
                     {
                         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".mp4", ".mov" };
@@ -396,11 +393,9 @@ namespace Social_Bookmarking_Platform.Controllers
                             return View(bookmark);
                         }
 
-                        // Define storage path
                         var storagePath = Path.Combine(_env.WebRootPath, "images", Image.FileName);
                         var databaseFileName = "/images/" + Image.FileName;
 
-                        // Delete the old image if it exists
                         if (!string.IsNullOrEmpty(bookmark.Image))
                         {
                             var existingFilePath = Path.Combine(_env.WebRootPath, bookmark.Image.TrimStart('/'));
@@ -466,6 +461,9 @@ namespace Social_Bookmarking_Platform.Controllers
             var currentUserId = _userManager.GetUserId(User);
             if (bookmark.UserId == currentUserId || User.IsInRole("Admin"))
             {
+
+                var likes = db.Likes.Where(l => l.BookmarkId == id);
+                db.Likes.RemoveRange(likes);
                 db.Comments.RemoveRange(bookmark.Comments); // Sterge comentariile asociate
                 db.Bookmarks.Remove(bookmark);
                 db.SaveChanges();
